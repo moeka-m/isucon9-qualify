@@ -1,27 +1,28 @@
 - hosts: webapp
-  user: root
+  # remote_user: root
+  become: yes
   gather_facts: yes
 
   roles:
     - user.isucon
     - bootstrap
-    - aliyun
+    # - aliyun  # alibaba cloud cli
     - webapp.deploy
 
     - nginx
     - mysql
     - golang
-    - perl
-    - php
-    - ruby
-    - python
+    # - perl
+    # - php
+    # - ruby
+    # - python
     - nodejs
     - webapp.mysql
     - webapp.golang
-    - webapp.perl
-    - webapp.php
-    - webapp.ruby
-    - webapp.python
+    # - webapp.perl
+    # - webapp.php
+    # - webapp.ruby
+    # - webapp.python
     - webapp.nodejs
     - webapp.nginx
 
@@ -37,4 +38,4 @@
       with_items:
         - nginx.service
         - mysql.service
-        - isucari.golang.service
+        - isucari.nodejs.service

@@ -12,21 +12,35 @@ set -e
 echo "-- ISUCON9 quarifier setup --"
 export DEBIAN_FRONTEND="noninteractive"
 apt update
-apt -y install python-pip
-pip install ansible==2.8.3
+# apt -y install python-pip
+# pip install ansible==2.8.3
 SCRIPT
 
 
 Vagrant.configure(2) do |config|
   config.vm.box = "bento/ubuntu-18.04"
+
+  config.vm.network "private_network", type: "dhcp"
+
   config.vm.provider "virtualbox" do |vm|
     vm.name   = "isucon9-quarifier"
     vm.cpus   = 4
     vm.memory = 2048
   end
+
   config.vm.hostname = "isucon9-quarifier"
 
   config.vm.provision :shell, inline: $disable_unattended_upgrades
   config.vm.provision :shell, inline: $setup_quarifier_environment
-  config.vm.synced_folder "../", "/vagrant", type: "rsync", rsync__exclude: ".git/"
+
+  config.vm.synced_folder "../", "/vagrant"
+
+  config.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "provisioning/webapp.yml"
+    ansible.inventory_path = "provisioning/inventory/hosts"
+    ansible.limit = "webapp"
+  end
+
 end
+
+
